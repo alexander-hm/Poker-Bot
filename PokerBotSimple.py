@@ -194,7 +194,6 @@ class PokerBotSimple(BasePokerPlayer):
 
         # Combine all features into a single fixed-size feature vector of length 22
         # Flatten the list of lists
-        print([hand_strength] + standard_features + action_history_features)
         features = flatten([hand_strength] + standard_features + action_history_features)
         features = np.array(features)
         features = features.reshape(1, -1)
