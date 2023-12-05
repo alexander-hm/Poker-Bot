@@ -1,10 +1,3 @@
-import os
-import math
-import random
-import numpy as np
-import collections
-from typing import Iterable
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -35,12 +28,12 @@ class Linear_QNet(nn.Module):
 # Deep Q Network: handles tr
 
 class DQNetwork:
-    def __init__(self, model_input_size, model_output_size, load_saved_model, gamma):
+    def __init__(self, model_input_size, model_output_size, gamma, saved_model = None):
         # model
         self.model = Linear_QNet(model_input_size, model_output_size)
-        if load_saved_model:
-            print('Loading model...:' + model_file_name)
-            model_state = torch.load("./models/" + model_file_name)
+        if saved_model != None:
+            print('Loading model...:' + saved_model)
+            model_state = torch.load(saved_model)
             self.model.load_state_dict(model_state)               
         # set optimizer and loss functions for models
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
@@ -53,7 +46,6 @@ class DQNetwork:
     # get underlying network's output for state
 
     def predict(self, state):
-        print('predicting')
         return self.model(state)
     
     # train network on state, action, and consequences
