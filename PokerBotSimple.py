@@ -16,6 +16,10 @@ from deepQnetwork import DQNetwork
 global DEBUG
 DEBUG = False
 
+# GPU settings
+GPU = True
+device = torch.device("cuda:0" if GPU and torch.cuda.is_available() else "cpu")
+
 # Model info
 MEMORY_SIZE = 10000
 BATCH_SIZE = 32
@@ -27,7 +31,6 @@ INITIAL_STACK = 2500
 
 # Deep RL constrants
 GAMMA = 0.85 
-
 
 # Greedy policy
 # Probability of choosing any action at random (vs. action with highest Q value)
@@ -50,7 +53,7 @@ class PokerBotSimple(BasePokerPlayer):
 
         # Initialize model depending on if using saved model
         if saved_model != None:
-            self.model = DQNetwork(self.model_input_size, self.model_output_size, GAMMA, saved_model=saved_model)       
+            self.model = DQNetwork(self.model_input_size, self.model_output_size, GAMMA, saved_model=saved_model)
         else:
              self.model = DQNetwork(self.model_input_size, self.model_output_size, GAMMA)
 
@@ -75,7 +78,7 @@ class PokerBotSimple(BasePokerPlayer):
             return random.randint(0, self.model_output_size - 1)
         else:
             with torch.no_grad():
-                state = torch.tensor(state, dtype=torch.float32).view(1, -1)
+                state = torch.tensor(state, dtype=torch.float32, device=device).view(1, -1)
                 q_values = self.model.predict(state)
                 return torch.argmax(q_values).item()
         

@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+# GPU settings
+GPU = True
+device = torch.device("cuda:0" if GPU and torch.cuda.is_available() else "cpu")
 
 # Simple Feed forward torch network to be utilized by model
 class Linear_QNet(nn.Module):
@@ -36,6 +39,7 @@ class DQNetwork:
             model_state = torch.load(saved_model)
             self.model.load_state_dict(model_state)               
         # set optimizer and loss functions for models
+        self.model.cuda()
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.criterion = nn.MSELoss()
         self.gamma = gamma
@@ -51,9 +55,9 @@ class DQNetwork:
     # train network on state, action, and consequences
 
     def train_step(self, state, action, reward, next_state, done):
-        state = torch.tensor(state, dtype=torch.float32)
-        next_state = torch.tensor(next_state, dtype=torch.float32)
-        action = torch.tensor(action, dtype=torch.float32)
+        state = torch.tensor(state, dtype=torch.float32, device=device)
+        next_state = torch.tensor(next_state, dtype=torch.float32, device=device)
+        action = torch.tensor(action, dtype=torch.float32, device=device)
         
         
         # get model's predicted Q values at the state and make copy
@@ -65,7 +69,7 @@ class DQNetwork:
         updated_Q = reward
             
         if not done:
-            updated_Q += self.gamma * torch.max(self.predict(next_state))
+            updated_Q += self.gamma * torch.max(self.predict(next_state)).to(device)
 
         # get the index of the action take at the state
         action_idx = torch.argmax(action).item()
