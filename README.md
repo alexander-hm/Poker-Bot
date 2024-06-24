@@ -1,6 +1,19 @@
 # Building a Deep Q-Learning Poker Bot
 ## Setting Up a Poker Environment
 For the poker bot to engage in reinforcement learning, it needs an environment or system that allows it to simulate poker games. We used the GitHub library PyPokerEngine by Ishikota. This library is designed specifically for poker AI development and allows us to simulate games of our choosing. Additionally, it provides an abstract BasePokerPlayer class which we implement to allow our poker bot to interact with the poker engine.
+
+## Running Instructions for GUI
+1. Install all the necessary packages (pip install -r requirements.txt)
+2. There is a slight bug in pypokergui due to the age. To fix, navigate to '~/opt/anaconda3/lib/python3.9/site-packages/pypokergui/server/templates' and edit the file 'round_state.html'. There are 3 places where you need to change a '/' to '//' so find these two lines:
+"{% for idx, player in zip(range(len(round_state['seats']))[:len(round_state['seats'])/2], round_state['seats']) %}"
+"{% for idx, player in zip(range(len(round_state['seats']))[len(round_state['seats'])/2:], round_state['seats'][len(round_state['seats'])/2:]) %}"
+
+And add a second slash to all 3 slashes and save.
+
+3. To run the GUI: 'pypokergui serve PATH_TO_FOLDER/poker_conf.yaml --port 8000 --speed fast'
+4. To edit the bots in the GUI, editSimpleBotGui
+
+
 ## Deep Q-Learning
 Regular Q-learning is a reinforcement learning technique in which State-Action pairs are mapped to corresponding Q-Values. These values are stored in a table and updated iteratively against target values calculated using the Bellman Equation. This state-action table method works well with finite, discrete state spaces–such as in games like chess or checkers — however, falls short at capturing the complexity of games like poker, where various state parameters exist within continuous domains, eg. pot size, call size, etc. Furthermore, poker is a game of incomplete information, meaning a clear-cut optimal move does not always exist and assumptions must be made. Therefore we turn to Deep Q-Learning in this context. Deep Q-Learning maintains a target neural network as a function approximator used to predict expected Q-values. The Bellman Equation then uses the same network to give us a MSE distance of our approximated Q-values from more exact Q values, that account directly for both immediate and future reward. The reward values are simply the amount of money the bot makes/loses directly after its action, and hence only are only non-zero after its final action of the hand.
 

@@ -1,6 +1,6 @@
 ai_players:
-- name: SimpleBot
-  path: /Users/ericstrawn/Documents/GitHub/Poker-Bot/simpleBotGui.py
+- name: Negreanu
+  path: PokerBotSimple.py
 ante: 0
 blind_structure: null
 initial_stack: 100

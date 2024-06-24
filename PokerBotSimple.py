@@ -260,4 +260,8 @@ class PokerBotSimple(BasePokerPlayer):
     def save_agent(self, file_name):
         self.model.get_NN().save(file_name)
 
-    
+
+
+def setup_ai(): 
+    saved_model_to_test = "./models/Daniel_Negreanu"
+    return PokerBotSimple(saved_model=saved_model_to_test, training_mode_on=False)
