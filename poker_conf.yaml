@@ -1,9 +1,9 @@
 ai_players:
-- name: Negreanu
-  path: PokerBotSimple.py
+- name: NewBot
+  path: PokerBot2.py
 ante: 0
 blind_structure: null
-initial_stack: 100
+initial_stack: 200
 max_round: 10
-small_blind: 5
+small_blind: 1
 
