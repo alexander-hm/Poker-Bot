@@ -45,8 +45,8 @@ class PokerBot2(BasePokerPlayer):
 
     def __init__(self, saved_model = None, training_mode_on = True):
         
-        self.model_input_size = 22
-        self.model_output_size = 7
+        self.model_input_size = 23
+        self.model_output_size = 21
 
         # Initialize model depending on if using saved model
         if saved_model != None:
@@ -105,7 +105,7 @@ class PokerBot2(BasePokerPlayer):
     def declare_action(self, valid_actions, hole_card, round_state):
 
         # Prepare feature vector based on the game state (length = 24)
-        feature_vector = self._extract_features(hole_card, round_state)
+        feature_vector = self._extract_features(hole_card, valid_actions, round_state)
 
         # If you made a last move in this round, train model on outcome of that move
         if not self.first_move and self.training_mode_on:
@@ -128,14 +128,12 @@ class PokerBot2(BasePokerPlayer):
         action_num = self.select_action(feature_vector)
 
         current_pot = round_state['pot']['main']['amount']
+        ## Making action map include a more balanced slate of actions TO TEST
         action_map = {
-            0: 'fold',
-            1: 'call',
-            2: 'raise',
-            3: 'raise',
-            4: 'raise',
-            5: 'raise',
-            6: 'raise'
+            0: 'fold', 1: 'call', 2: 'raise', 3: 'raise', 4: 'raise', 
+            5: 'raise', 6: 'raise', 7: 'fold', 8: 'fold', 9: 'fold', 
+            10: 'fold', 11: 'fold', 12: 'fold', 13: 'fold', 14: 'fold', 
+            15: 'call', 16: 'call', 17: 'call', 18: 'call', 19: 'call', 20: 'call'
         }
         action = action_map.get(action_num, 'fold')
         amount = valid_actions[1]['amount']
@@ -152,7 +150,7 @@ class PokerBot2(BasePokerPlayer):
             amount += valid_actions[2]['amount']['max'] # all-in
 
         # store action for future training
-        self.last_action = [0, 0, 0, 0, 0, 0, 0]
+        self.last_action = [0] * 21
         self.last_action[action_num] = 1
         self.last_state = feature_vector
         
@@ -173,7 +171,7 @@ class PokerBot2(BasePokerPlayer):
         pass
 
     
-    def _extract_features(self, hole_card, round_state, win = None):
+    def _extract_features(self, hole_card, valid_actions, round_state, win = None):
 
         
         #simulate hand against 1000 flops extracting hand strength estimate, unless round over
@@ -186,9 +184,11 @@ class PokerBot2(BasePokerPlayer):
         else:
             hand_strength = estimate_hole_card_win_rate(1000, self.num_players, gen_cards(hole_card), gen_cards(round_state['community_card']))
 
-        pot_odds = 0
-        
-
+        # getting an estimate of pot odds strength, cant use real pot odds because inital bets have 
+        # call value of 0 but using an estimate where higher number means better odds
+        pot_odds = round_state['pot']['main']['amount']
+        if valid_actions[1]['amount'] != 0:
+            pot_odds *= 1 - (valid_actions[1]['amount'] / pot_odds)
 
         # get stack ammout
         stack = 0
@@ -213,7 +213,7 @@ class PokerBot2(BasePokerPlayer):
 
         # Combine all features into a single fixed-size feature vector of length 22
         # Flatten the list of lists
-        features = flatten([hand_strength] + standard_features + action_history_features)
+        features = flatten([hand_strength] + [pot_odds] + standard_features + action_history_features)
         features = np.array(features)
         features = features.reshape(1, -1)
         return features
@@ -269,7 +269,7 @@ class PokerBot2(BasePokerPlayer):
                 self.curr_stack = new_stack
         
         # train on players' last move in round
-        final_state = self._extract_features(None, round_state, win)
+        final_state = self._extract_features(None, None, round_state, win)
         if self.training_mode_on:
             #train model with reward as net chip gain
             self.train_short_mem(self.last_state, self.last_action, reward, final_state, True)        
