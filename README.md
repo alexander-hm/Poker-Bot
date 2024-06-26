@@ -4,14 +4,8 @@ For the poker bot to engage in reinforcement learning, it needs an environment o
 
 ## Running Instructions for GUI
 1. Install all the necessary packages (pip install -r requirements.txt)
-2. There is a slight bug in pypokergui due to the age. To fix, navigate to '~/opt/anaconda3/lib/python3.9/site-packages/pypokergui/server/templates' and edit the file 'round_state.html'. There are 3 places where you need to change a '/' to '//' so find these two lines:
-"{% for idx, player in zip(range(len(round_state['seats']))[:len(round_state['seats'])/2], round_state['seats']) %}"
-"{% for idx, player in zip(range(len(round_state['seats']))[len(round_state['seats'])/2:], round_state['seats'][len(round_state['seats'])/2:]) %}"
-
-And add a second slash to all 3 slashes and save.
-
-3. To run the GUI: 'pypokergui serve PATH_TO_FOLDER/poker_conf.yaml --port 8000 --speed fast'
-4. To edit the bots in the GUI, editSimpleBotGui
+2. To run the GUI: 'pypokergui serve PATH_TO_FOLDER/poker_conf.yaml --port 8000 --speed fast'
+3. To edit the bots in the GUI, editSimpleBotGui
 
 
 ## Deep Q-Learning
