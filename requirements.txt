@@ -2,4 +2,4 @@ numpy==1.22.3
 PyPokerEngine==1.0.1
 torch==1.10.2
 matplotlib
-pypokergui
+-e ./PyPokerGUI

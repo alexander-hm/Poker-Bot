@@ -1,0 +1,3 @@
+[submodule "PyPokerGUI"]
+	path = PyPokerGUI
+	url = https://github.com/ishikota/PyPokerGUI.git
