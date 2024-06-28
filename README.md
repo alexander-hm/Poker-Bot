@@ -3,8 +3,9 @@
 For the poker bot to engage in reinforcement learning, it needs an environment or system that allows it to simulate poker games. We used the GitHub library PyPokerEngine by Ishikota. This library is designed specifically for poker AI development and allows us to simulate games of our choosing. Additionally, it provides an abstract BasePokerPlayer class which we implement to allow our poker bot to interact with the poker engine.
 
 ## Running Instructions for GUI
-1. Install all the necessary packages (pip install -r requirements.txt)
-2. To run the GUI: 'pypokergui serve PATH_TO_FOLDER/poker_conf.yaml --port 8000 --speed fast'
+1. Install all the necessary packages (`pip install -r requirements.txt`)
+2. Run `git submodule init` and `git submodule update`
+2. To run the GUI: `pypokergui serve PATH_TO_FOLDER/poker_conf.yaml --port 8000 --speed fast`
 3. To edit the bots in the GUI, editSimpleBotGui
 
 
