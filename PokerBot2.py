@@ -8,6 +8,8 @@ from typing import Iterable
 # useful pypoker modules
 from pypokerengine.players import BasePokerPlayer
 from pypokerengine.utils.card_utils import estimate_hole_card_win_rate, gen_cards
+from PokerBotSimple import PokerBotSimple
+
 
 # our netowrk
 from deepQnetwork import DQNetwork
@@ -164,6 +166,7 @@ class PokerBot2(BasePokerPlayer):
         if amount == -1:
             action = 'call'
             amount = valid_actions[1]['amount']
+
         return action, amount
     
 
@@ -211,7 +214,7 @@ class PokerBot2(BasePokerPlayer):
         # 15 Action history features (3 {# raises, # calls, #folds} for each betting stage: preflop, flop, turn, river, showdown)
         action_history_features = self.raise_count + self.call_count + self.fold_count
 
-        # Combine all features into a single fixed-size feature vector of length 22
+        # Combine all features into a single fixed-size feature vector of length 23
         # Flatten the list of lists
         features = flatten([hand_strength] + [pot_odds] + standard_features + action_history_features)
         features = np.array(features)
@@ -278,8 +281,6 @@ class PokerBot2(BasePokerPlayer):
     # save model to file
     def save_agent(self, file_name):
         self.model.get_NN().save(file_name)
-
-
 
 def setup_ai(): 
     saved_model_to_test = "./models/Phil_Ivey"

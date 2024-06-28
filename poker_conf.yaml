@@ -1,5 +1,5 @@
 ai_players:
-- name: NewBot
+- name: Phil Ivey
   path: PokerBot2.py
 ante: 0
 blind_structure: null
